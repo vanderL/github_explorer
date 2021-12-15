@@ -1,8 +1,12 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 
 const Repository: React.FC = () => {
   return (
-    <h1>Repository</h1>
+    <div>
+      <h1> Você ta no Repository</h1>
+      <Link to="/"> Dashboard </Link>
+    </div>
   )
 }
 
