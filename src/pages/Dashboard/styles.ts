@@ -15,6 +15,8 @@ export const Form = styled.form`
   max-width: 700px;
 
   display: flex;
+
+  gap: 10px;
   
   input {
     flex: 1;
@@ -55,6 +57,7 @@ export const Repository = styled.div`
     width: 100%;
     display: block;
     text-decoration: none;
+    padding: 16px;
 
     display: flex;
     align-items: center;
@@ -76,6 +79,7 @@ export const Repository = styled.div`
   
     div {
       margin-left: 16px;
+      flex: 1;
   
       strong {
         font-size: 20px;
