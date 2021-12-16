@@ -6,7 +6,7 @@ import api from '../../services/api';
 import logoImg from '../../assets/logo.svg';
 
 import { Link } from 'react-router-dom';
-import { Title, Form, Repository } from "./styles";
+import { Title, Form, Repository, Error } from "./styles";
 
 interface Repository {
   full_name: string;
@@ -19,18 +19,38 @@ interface Repository {
 
 const Dashboard: React.FC = () => {
   const [newRepo, setNewRepo] = useState('');
+  const [inputErrorRepo, setInputErrorRepo] = useState('');
+  const [inputErrorOwner, setInputErrorOwner] = useState('');
   const [ownerRepo, setOwnerRepo] = useState('');
   const [repositories, setRepositories] = useState<Repository[]>([]);
 
   async function handleAddRepository(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
+    setInputErrorRepo('');
+    setInputErrorOwner('');
 
-    const response = await api.get<Repository>(`repos/${ownerRepo}/${newRepo}`)
+    if (!ownerRepo.trim()) {
+      setInputErrorOwner('Digite o nome do proprietario');
+      return;
+    };
 
-    const repository = response.data;
-    console.log(repository.owner)
+    if (!newRepo.trim()) {
+      setInputErrorRepo('Digite o nome do repositório');
+      return;
+    };
 
-    setRepositories([...repositories, repository]);
+    try {
+      const response = await api.get<Repository>(`repos/${ownerRepo}/${newRepo}`)
+
+      const repository = response.data;
+      console.log(repository.owner)
+
+      setRepositories([...repositories, repository]);
+    } catch (error) {
+      const messagem = "Erro na busca";
+      setInputErrorRepo(messagem);
+      setInputErrorOwner(messagem);
+    }
   }
 
   return (
@@ -38,7 +58,7 @@ const Dashboard: React.FC = () => {
       <img src={logoImg} alt="Github Explorer" />
       <Title> Você ta no Dashboard</Title>
 
-      <Form onSubmit={handleAddRepository}>
+      <Form hasError={!!inputErrorRepo || !!inputErrorOwner} onSubmit={handleAddRepository}>
         <input
           type="text"
           placeholder="Digite o nome do proprietario"
@@ -53,6 +73,17 @@ const Dashboard: React.FC = () => {
         />
         <button type="submit">Pesquisar</button>
       </Form>
+
+      {inputErrorRepo &&
+        <Error>
+          {inputErrorRepo}
+        </Error>
+      }
+      {inputErrorOwner &&
+        <Error>
+          {inputErrorOwner}
+        </Error>
+      }
 
       <Repository>
         {repositories.map(repository => (
