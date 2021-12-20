@@ -8,7 +8,7 @@ import logoImg from '../../assets/logo.svg';
 import { Link } from 'react-router-dom';
 import { Title, Form, Repository, Error } from "./styles";
 
-interface Repository {
+interface RepositoryProps {
   full_name: string;
   description: string;
   owner: {
@@ -22,7 +22,7 @@ const Dashboard: React.FC = () => {
   const [inputErrorRepo, setInputErrorRepo] = useState('');
   const [inputErrorOwner, setInputErrorOwner] = useState('');
   const [ownerRepo, setOwnerRepo] = useState('');
-  const [repositories, setRepositories] = useState<Repository[]>(() => {
+  const [repositories, setRepositories] = useState<RepositoryProps[]>(() => {
     const storagedRepositories = localStorage.getItem('@githubExplorer:repositories');
 
     if (storagedRepositories) {
@@ -46,7 +46,7 @@ const Dashboard: React.FC = () => {
     };
 
     try {
-      const response = await api.get<Repository>(`repos/${ownerRepo}/${newRepo}`)
+      const response = await api.get<RepositoryProps>(`repos/${ownerRepo}/${newRepo}`)
 
       const repository = response.data;
       console.log(repository.owner)
